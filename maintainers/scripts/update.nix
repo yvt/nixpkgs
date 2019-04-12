@@ -3,6 +3,7 @@
 , path ? null
 , max-workers ? null
 , keep-going ? null
+, commit ? null
 }:
 
 # TODO: add assert statements
@@ -122,19 +123,26 @@ let
         --argstr keep-going true
 
     to continue running when a single update fails.
+
+    You can also make the updater automatically commit on your behalf from updateScripts
+    that support it by adding
+
+        --argstr commit true
   '';
 
   packageData = package: {
     name = package.name;
     pname = (builtins.parseDrvName package.name).name;
-    updateScript = map builtins.toString (pkgs.lib.toList package.updateScript);
+    updateScript = map builtins.toString (pkgs.lib.toList (package.updateScript.command or package.updateScript));
+    supportedFeatures = package.updateScript.supportedFeatures or [];
   };
 
   packagesJson = pkgs.writeText "packages.json" (builtins.toJSON (map packageData packages));
 
   optionalArgs =
     pkgs.lib.optional (max-workers != null) "--max-workers=${max-workers}"
-    ++ pkgs.lib.optional (keep-going == "true") "--keep-going";
+    ++ pkgs.lib.optional (keep-going == "true") "--keep-going"
+    ++ pkgs.lib.optional (commit == "true") "--commit";
 
   args = [ packagesJson ] ++ optionalArgs;
 
