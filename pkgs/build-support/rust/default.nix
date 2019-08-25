@@ -93,6 +93,21 @@ stdenv.mkDerivation (args // {
 
     unset cargoDepsCopy
     export RUST_LOG=${logLevel}
+  '' + stdenv.lib.optionalString cargoCopyLockfile ''
+    if ! diff source/Cargo.lock $cargoDeps/Cargo.lock ; then
+      echo
+      echo "ERROR: cargoSha256 is out of date."
+      echo
+      echo "Cargo.lock is not the same in $cargoDeps."
+      echo
+      echo "To fix the issue:"
+      echo '1. Use "1111111111111111111111111111111111111111111111111111" as the cargoSha256 value'
+      echo "2. Build the derivation and wait it to fail with a hash mismatch"
+      echo "3. Copy the 'got: sha256:' value back into the cargoSha256 field"
+      echo
+
+      exit 1
+    fi
   '' + (args.postUnpack or "");
 
   configurePhase = args.configurePhase or ''
