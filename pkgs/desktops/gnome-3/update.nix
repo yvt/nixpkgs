@@ -1,5 +1,5 @@
 { stdenv, lib, writeScript, python3, common-updater-scripts }:
-{ packageName, attrPath ? packageName, versionPolicy ? "odd-unstable" }:
+{ packageName, attrPath ? packageName, versionPolicy ? "none" }:
 
 let
   python = python3.withPackages (p: [ p.requests ]);
