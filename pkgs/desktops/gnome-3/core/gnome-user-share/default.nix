@@ -1,5 +1,7 @@
 { stdenv
 , gettext
+, meson
+, ninja
 , fetchurl
 , apacheHttpd
 , nautilus
@@ -14,16 +16,22 @@
 , mod_dnssd
 , gnome3
 , libcanberra-gtk3
+, python3
 }:
 
 stdenv.mkDerivation rec {
   pname = "gnome-user-share";
-  version = "3.32.0.1";
+  version = "3.34.0";
 
   src = fetchurl {
     url = "mirror://gnome/sources/${pname}/${stdenv.lib.versions.majorMinor version}/${pname}-${version}.tar.xz";
-    sha256 = "16w6n0cjyzp8vln3zspvab8jhjprpvs88xc9x7bvigg0wry74945";
+    sha256 = "04r9ck9v4i0d31grbli1d4slw2d6dcsfkpaybkwbzi7wnj72l30x";
   };
+
+  postPatch = ''
+    chmod +x meson_post_install.py
+    patchShebangs meson_post_install.py
+  '';
 
   preConfigure = ''
     sed -e 's,^LoadModule dnssd_module.\+,LoadModule dnssd_module ${mod_dnssd}/modules/mod_dnssd.so,' \
@@ -31,19 +39,25 @@ stdenv.mkDerivation rec {
       -i data/dav_user_2.4.conf
   '';
 
-  configureFlags = [
-    "--with-httpd=${apacheHttpd.out}/bin/httpd"
-    "--with-modules-path=${apacheHttpd.dev}/modules"
-    "--with-systemduserunitdir=${placeholder "out"}/etc/systemd/user"
-    "--with-nautilusdir=${placeholder "out"}/lib/nautilus/extensions-3.0"
+  NIX_CFLAGS_COMPILE = "-I${glib.dev}/include/gio-unix-2.0";
+
+  mesonFlags = [
+    "-Dhttpd=['${apacheHttpd.out}/bin/httpd']"
+    "-Dmodules_path=${apacheHttpd.dev}/modules"
+    "-Dsystemduserunitdir=${placeholder "out"}/etc/systemd/user"
+    # not exposed with meson
+    # "-Dwith-nautilusdir=${placeholder "out"}/lib/nautilus/extensions-3.0"
   ];
 
   nativeBuildInputs = [
     pkgconfig
+    meson
+    ninja
     gettext
     itstool
     libxml2
     wrapGAppsHook
+    python3
   ];
 
   buildInputs = [
