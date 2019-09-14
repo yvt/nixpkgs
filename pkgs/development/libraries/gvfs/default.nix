@@ -36,6 +36,7 @@
 , libsecret
 , libgdata
 , python3
+, gsettings-desktop-schemas
 }:
 
 stdenv.mkDerivation rec {
@@ -87,6 +88,7 @@ stdenv.mkDerivation rec {
     libcdio-paranoia
     libnfs
     openssh
+    gsettings-desktop-schemas
     # TODO: a ligther version of libsoup to have FTP/HTTP support?
   ] ++ stdenv.lib.optionals gnomeSupport [
     gnome3.libsoup
