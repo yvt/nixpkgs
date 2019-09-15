@@ -265,6 +265,11 @@ in
         source-sans-pro
       ];
 
+      security.wrappers.gnome-shell = {
+        source = "${pkgs.gnome3.gnome-shell}/bin/gnome-shell";
+        capabilities = "cap_sys_nice+ep";
+      };
+
       # Adapt from https://gitlab.gnome.org/GNOME/gnome-build-meta/blob/gnome-3-32/elements/core/meta-gnome-core-shell.bst
       environment.systemPackages = with pkgs.gnome3; [
         adwaita-icon-theme

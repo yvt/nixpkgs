@@ -72,6 +72,14 @@ in stdenv.mkDerivation rec {
 
   postInstall = ''
     glib-compile-schemas $out/share/glib-2.0/schemas
+
+    # For realtime scheduling
+    files=($out/share/applications/org.gnome.Shell.desktop $out/lib/systemd/user/*)
+
+    for file in ''${files[*]}; do
+      substituteInPlace $file \
+        --replace "$out/bin/gnome-shell" "/run/wrappers/bin/gnome-shell"
+    done
   '';
 
   preFixup = ''
