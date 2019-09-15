@@ -26,6 +26,12 @@ stdenv.mkDerivation rec {
     glib
   ];
 
+  patches = [
+    # meson builds an incorrect .pc file
+    # glib should be Requires not Requires.private
+    ./fix_pc.patch
+  ];
+
   doCheck = true;
 
   passthru = {
