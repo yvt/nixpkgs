@@ -2,15 +2,27 @@
 , pkgconfig, gtk3, glib, gobject-introspection
 , wrapGAppsHook, itstool, gnupg, libsoup
 , gnome3, gpgme, python3, openldap, gcr
-, libsecret, avahi, p11-kit, openssh, gsettings-desktop-schemas }:
+, libsecret, avahi, p11-kit, openssh, gsettings-desktop-schemas, fetchFromGitLab }:
 
 stdenv.mkDerivation rec {
-  pname = "seahorse";
-  version = "3.32.2";
+  # pname = "seahorse";
+  # version = "3.32.2";
 
-  src = fetchurl {
-    url = "mirror://gnome/sources/${pname}/${stdenv.lib.versions.majorMinor version}/${pname}-${version}.tar.xz";
-    sha256 = "0d8zdzmlz7fjv9xl20zl4ckidf465mvdjnbpxy3k08y9iw423q4x";
+  # src = fetchurl {
+  #   url = "mirror://gnome/sources/${pname}/${stdenv.lib.versions.majorMinor version}/${pname}-${version}.tar.xz";
+  #   sha256 = "0d8zdzmlz7fjv9xl20zl4ckidf465mvdjnbpxy3k08y9iw423q4x";
+  # };
+
+  pname = "seahorse-unstable";
+  version = "2019-09-14";
+
+  # See: https://gitlab.gnome.org/GNOME/seahorse/issues/242
+  src = fetchFromGitLab {
+    domain = "gitlab.gnome.org";
+    owner = "GNOME";
+    repo = "seahorse";
+    rev = "7872d719e19f637b1dcd5d4178fce342fcfa1a64";
+    sha256 = "18clxzrpmh441phh6r78x3fr8mms2if6ijk91w8mn8mssgzxa3vq";
   };
 
   doCheck = true;
