@@ -1,7 +1,21 @@
 { stdenv, fetchurl, substituteAll, pkgconfig, glib, itstool, libxml2, xorg
 , accountsservice, libX11, gnome3, systemd, autoreconfHook
 , gtk3, libcanberra-gtk3, pam, libtool, gobject-introspection, plymouth
-, librsvg, coreutils, xwayland }:
+, librsvg, coreutils, xwayland, nixos-icons }:
+
+let
+
+  icon = fetchurl {
+    url = "https://raw.githubusercontent.com/NixOS/nixos-artwork/4f041870efa1a6f0799ef4b32bb7be2cafee7a74/logo/nixos.svg";
+    sha256 = "0b0dj408c1wxmzy6k0pjwc4bzwq286f1334s3cqqwdwjshxskshk";
+  };
+
+  override = substituteAll {
+    src = ./org.gnome.login-screen.gschema.override;
+    inherit icon;
+  };
+
+in
 
 stdenv.mkDerivation rec {
   pname = "gdm";
@@ -64,6 +78,12 @@ stdenv.mkDerivation rec {
     "sysconfdir=$(out)/etc"
     "dbusconfdir=$(out)/etc/dbus-1/system.d"
   ];
+
+  postFixup = ''
+    schema_dir=${glib.makeSchemaPath "$out" "${pname}-${version}"}
+    cp ${override} $schema_dir/org.gnome.login-screen.gschema.override
+    glib-compile-schemas $schema_dir --targetdir=$schema_dir
+  '';
 
   passthru = {
     updateScript = gnome3.updateScript {
