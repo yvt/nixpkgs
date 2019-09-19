@@ -31,6 +31,8 @@
 , systemd
 , networkmanagerapplet
 , tzdata
+, yelp
+, libgnomekbd
 }:
 
 stdenv.mkDerivation rec {
@@ -83,7 +85,8 @@ stdenv.mkDerivation rec {
     })
     (substituteAll {
       src = ./fix-paths.patch;
-      inherit tzdata;
+      inherit tzdata libgnomekbd;
+      yelp = "${yelp}/bin/yelp"; # gnome-welcome-tour
     })
   ];
 
