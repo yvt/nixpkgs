@@ -95,9 +95,6 @@ stdenv.mkDerivation rec {
     "-Dcheese=disabled"
     "-Dsoftware-sources=disabled"
     "-Dibus=disabled"
-    # Disable pages not right for NixOS
-    # For example user accounts should be preconfigured
-    # and we can't modify system time with systemd.
     "-Dvendor-conf-file=${./vendor.conf}"
   ];
 
