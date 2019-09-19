@@ -1374,6 +1374,8 @@ in
 
   copyright-update = callPackage ../tools/text/copyright-update { };
 
+  corebird = callPackage ../applications/networking/corebird { };
+
   inherit (callPackage ../tools/misc/coreboot-utils { })
     msrtool
     cbmem
