@@ -18,6 +18,7 @@
   libxcb,
   libXi,
   libxkbcommon,
+  libxml2_13,
   ncurses,
   wayland,
   zlib,
@@ -55,6 +56,7 @@ stdenv.mkDerivation {
     libxcb
     libXi
     libxkbcommon
+    libxml2_13
     ncurses
     wayland
     zlib
