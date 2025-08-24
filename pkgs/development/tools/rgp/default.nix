@@ -78,7 +78,7 @@ stdenv.mkDerivation {
         $out/bin/$prog \
         --unset QT_QPA_PLATFORMTHEME \
         --unset QT_STYLE_OVERRIDE \
-        --prefix LD_LIBRARY_PATH : $out/opt/rgp/lib
+        --prefix LD_LIBRARY_PATH : $out/opt/rgp/lib:${lib.makeLibraryPath [ dbus ]}
     done
   '';
 
